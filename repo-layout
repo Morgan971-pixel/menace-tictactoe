@@ -1,0 +1,21 @@
+menace-tictactoe/
+│
+├── menace/                   # Core library
+│   ├── __init__.py
+│   ├── game.py               # Board + rules
+│   ├── menace.py             # MENACE agent
+│   ├── opponent.py           # Opponent strategies
+│   └── train.py              # Training loop + visualization
+│
+├── examples/
+│   ├── train_and_plot.py     # Demo: training MENACE + plotting stats
+│   └── play_vs_human.py      # Demo: play interactively vs MENACE (CLI)
+│
+├── tests/
+│   ├── test_game.py          # Unit tests for board/winner logic
+│   ├── test_menace.py        # Tests for MENACE agent basics
+│   └── test_training.py      # Tests for training loop
+│
+├── requirements.txt          # Required Python packages
+├── README.md                 # Documentation with visuals
+└── LICENSE                   # MIT 
