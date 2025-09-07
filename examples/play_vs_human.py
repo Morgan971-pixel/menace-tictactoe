@@ -1,5 +1,5 @@
 from menace.game import Board, winner
-from menace.train import play_game_once
+from menace.train import train_menace
 from menace.menace import MENACE
 
 def human_vs_menace(menace):
@@ -38,8 +38,11 @@ def human_vs_menace(menace):
             print("Result:", "Draw" if res == 'D' else f"{res} wins")
             break
 
-if __name__ == "__main__":
+def main():
     menace = MENACE()
     print("Training MENACE quickly (500 games)...")
-    menace, _ = play_game_once(menace), []
+    menace, _ = train_menace(n_games=500, report_every=100)
     human_vs_menace(menace)
+
+if __name__ == "__main__":
+    main()

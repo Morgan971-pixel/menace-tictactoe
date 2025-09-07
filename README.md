@@ -19,4 +19,17 @@ A Python reimplementation of Donald Michie’s **MENACE (1960s)** — a physical
 ```bash
 git clone https://github.com/Morgan971-pixel/menace-tictactoe.git
 cd menace-tictactoe
-pip install -r requirements.txt
+pip install -e .
+```
+
+## Usage
+
+To train MENACE and see the learning curve:
+```bash
+menace-train
+```
+
+To play against a trained MENACE:
+```bash
+menace-play
+```
