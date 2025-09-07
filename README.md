@@ -29,7 +29,7 @@ To train MENACE and see the learning curve:
 menace-train
 ```
 
-To play against a trained MENACE:
+To play an interactive game against a trained MENACE in your terminal:
 ```bash
 menace-play
 ```
