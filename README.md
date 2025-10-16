@@ -33,3 +33,43 @@ To play an interactive game against a trained MENACE in your terminal:
 ```bash
 menace-play
 ```
+
+## Historical Background
+
+MENACE was originally created by **Donald Michie** in 1961 at Edinburgh University. Using 304 matchboxes and colored beads, Michie demonstrated that machine learning was possible without computers, decades before modern AI algorithms became practical.
+
+### Key Historical Facts:
+- **Inventor**: Donald Michie (1923-2007), British AI pioneer
+- **Year**: 1961
+- **Method**: 304 physical matchboxes containing colored beads
+- **Learning**: Reinforcement through bead adjustment based on game outcomes
+- **Impact**: Demonstrated feasibility of machine learning concepts
+
+## References and Further Reading
+
+### Original Work
+- **Michie, D.** (1961). "Trial and Error". *Science Survey*, Part 2, pp. 129-145. Penguin Books.
+- **Michie, D.** (1963). "Experiments on the mechanization of game-learning part I. Characterization of the model and its parameters". *The Computer Journal*, 6(3), 232-236.
+
+### Historical Context
+- **Gardner, M.** (1962). "Mathematical Games: How to build a game-learning machine and then teach it to play and win". *Scientific American*, 206(4), 138-151.
+- **Sutton, R. S., & Barto, A. G.** (2018). *Reinforcement Learning: An Introduction* (2nd ed.). MIT Press. [Chapter 1 discusses MENACE's historical significance]
+
+### Modern Implementations and Analysis
+- **Science Museum London**: Houses an original MENACE reconstruction
+- **Flach, P.** (2012). *Machine Learning: The Art and Science of Algorithms that Make Sense of Data*. Cambridge University Press. [Section 15.1]
+
+### Online Resources
+- [Donald Michie - Wikipedia](https://en.wikipedia.org/wiki/Donald_Michie)
+- [MENACE - Science Museum Group](https://collection.sciencemuseumgroup.org.uk/objects/co8232360/menace-machine-educable-noughts-and-crosses-engine-computer)
+- [Computerphile: MENACE Video](https://www.youtube.com/watch?v=R9c-_neaxeU) - Excellent visual explanation
+
+## Attribution
+
+This implementation pays tribute to Donald Michie's groundbreaking work in machine learning. While modernized for Python, it faithfully recreates the core algorithm that demonstrated machine learning was possible using simple physical components.
+
+**Citation**: If you use this implementation in academic work, please cite both this repository and Michie's original work:
+
+```
+Michie, D. (1961). Trial and Error. Science Survey, Part 2, pp. 129-145. Penguin Books.
+```
