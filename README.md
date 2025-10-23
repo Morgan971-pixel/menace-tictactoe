@@ -57,7 +57,7 @@ MENACE was originally created by **Donald Michie** in 1961 at Edinburgh Universi
 
 ### Online Resources
 - [Donald Michie - Wikipedia](https://en.wikipedia.org/wiki/Donald_Michie)
-- [MENACE (MSCROGGS) - PLAY ON WEBSITE WITH MORE GUI AND MORE SETTINGS](https://www.mscroggs.co.uk/menace/)
+- [MENACE (MSCROGGS) - Play with more settings](https://www.mscroggs.co.uk/menace/)
 - [Computerphile: MENACE Video](https://www.youtube.com/watch?v=R9c-_neaxeU) - Excellent visual explanation
 
 ## Attribution
