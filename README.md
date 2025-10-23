@@ -62,4 +62,4 @@ MENACE was originally created by **Donald Michie** in 1961 at Edinburgh Universi
 
 ## Attribution
 
-This implementation pays tribute to Donald Michie's groundbreaking work in machine learning. While modernized for Python, it faithfully recreates the core algorithm that demonstrated machine learning was possible using simple physical components.
+This implementation pays tribute to Donald Michie's groundbreaking work in machine learning. While modernized for Python, it recreates the core algorithm that demonstrated machine learning was possible using simple physical components.
