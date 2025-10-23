@@ -55,10 +55,6 @@ MENACE was originally created by **Donald Michie** in 1961 at Edinburgh Universi
 - **Gardner, M.** (1962). "Mathematical Games: How to build a game-learning machine and then teach it to play and win". *Scientific American*, 206(4), 138-151.
 - **Sutton, R. S., & Barto, A. G.** (2018). *Reinforcement Learning: An Introduction* (2nd ed.). MIT Press. [Chapter 1 discusses MENACE's historical significance]
 
-### Modern Implementations and Analysis
-- **Science Museum London**: Houses an original MENACE reconstruction
-- **Flach, P.** (2012). *Machine Learning: The Art and Science of Algorithms that Make Sense of Data*. Cambridge University Press. [Section 15.1]
-
 ### Online Resources
 - [Donald Michie - Wikipedia](https://en.wikipedia.org/wiki/Donald_Michie)
 - [MENACE (MSCROGGS) - PLAY ON WEBSITE WITH MORE GUI AND MORE SETTINGS](https://www.mscroggs.co.uk/menace/)
@@ -68,7 +64,7 @@ MENACE was originally created by **Donald Michie** in 1961 at Edinburgh Universi
 
 This implementation pays tribute to Donald Michie's groundbreaking work in machine learning. While modernized for Python, it faithfully recreates the core algorithm that demonstrated machine learning was possible using simple physical components.
 
-**Citation**: If you use this implementation in academic work, please cite both this repository and Michie's original work:
+**Citation**: If you use this implementation, please cite both this repository and Michie's original work:
 
 ```
 Michie, D. (1961). Trial and Error. Science Survey, Part 2, pp. 129-145. Penguin Books.
