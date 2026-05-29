@@ -1,65 +1,113 @@
-# MENACE: Matchbox Educable Noughts And Crosses Engine 🎲❌⭕  
+# MENACE: Matchbox Educable Noughts and Crosses Engine
 
-A Python reimplementation of Donald Michie’s **MENACE (1960s)** — a physical matchbox machine that learned Tic-Tac-Toe using beads.
+MENACE is a tic-tac-toe playing machine that learns through reinforcement. It was devised by Donald Michie in 1961 using 304 matchboxes and coloured beads, long before this kind of learning was practical on computers. This repository is a Python reimplementation that trains a MENACE agent, lets it play against random or perfect opponents, and supports interactive play against a human.
 
-![Learning Curve](examples/learning_curve.png)
+## Features
 
----
+- Reinforcement learning agent driven by a bead-counting mechanism.
+- Symmetry reduction over rotations and reflections to shrink the state space.
+- Random and perfect (minimax) opponents for training and evaluation.
+- Standard training, MENACE vs MENACE self-play, and play against a perfect opponent.
+- Save and load trained agents as portable JSON.
+- Training progress bar and a configurable learning-curve plot.
+- Command-line entry points and a small Python API.
+- Unit tests.
 
-## ✨ Features
-- MENACE agent with reinforcement learning (bead adjustment).
-- Symmetry reduction (rotations/reflections).
-- Training loop + visualization of win/draw/loss rates.
-- Play interactively vs MENACE in the terminal.
-- Unit tests included.
+## Installation
 
----
-
-## 🚀 Getting Started
 ```bash
 git clone https://github.com/Morgan971-pixel/menace-tictactoe.git
 cd menace-tictactoe
 pip install -e .
 ```
 
+Install the test extras with:
+
+```bash
+pip install -e ".[test]"
+```
+
 ## Usage
 
-To train MENACE and see the learning curve:
+Train MENACE and view the learning curve:
+
 ```bash
-menace-train
+menace-train --games 5000 --report-every 500 --save trained.json
 ```
 
-To play an interactive game against a trained MENACE in your terminal:
+`menace-train` arguments:
+
+- `--games` (int, default 5000): number of training games.
+- `--report-every` (int, default 500): report interval in games.
+- `--save` (str, optional): path to save the trained MENACE as JSON.
+- `--no-plot`: skip showing the plot (plotting is on by default).
+
+Play against MENACE in the terminal:
+
 ```bash
-menace-play
+menace-play --load trained.json --no-learn
 ```
+
+`menace-play` arguments:
+
+- `--games` (int, default 1000): training games to run when no agent is loaded.
+- `--load` (str, optional): path to a saved MENACE JSON to load instead of training.
+- `--no-learn`: do not update MENACE beads during the play session.
+
+Python API:
+
+```python
+from menace import MENACE, train_menace
+
+menace, stats = train_menace(n_games=5000, report_every=500)
+menace.save("trained.json")
+
+fresh = MENACE()
+fresh.load("trained.json")
+
+move, log = fresh.choose_move([" "] * 9)
+```
+
+## Training Modes
+
+### Standard training (vs random)
+
+`train_menace(n_games, report_every)` plays MENACE as X against a random opponent and reinforces moves after each game. This is the default mode used by `menace-train`.
+
+### Self-play
+
+`train_menace_selfplay(n_games, report_every)` trains two agents against each other. `menace_x` always plays X and `menace_o` always plays O. After each game both are updated, with O's reward taken from O's perspective. It returns `(menace_x, menace_o, stats)`.
+
+### Vs perfect opponent
+
+Pass the minimax opponent to `train_menace` to train against optimal play:
+
+```python
+from menace import train_menace, perfect_opponent_move
+
+menace, stats = train_menace(n_games=5000, opponent=perfect_opponent_move)
+```
+
+A perfect opponent never loses, so MENACE converges toward drawing rather than winning.
+
+## How It Works
+
+Each board position MENACE can face is represented by a matchbox holding beads, one colour per legal move. To move, MENACE draws a bead at random, so moves with more beads are more likely. After a game it adjusts the beads: winning moves gain beads, drawing moves gain fewer, and losing moves lose beads down to a floor of one. Symmetry reduction maps each board to a canonical form across the eight rotations and reflections, so strategically equivalent positions share a single matchbox and learning converges faster.
 
 ## Historical Background
 
-MENACE was originally created by **Donald Michie** in 1961 at Edinburgh University. Using 304 matchboxes and colored beads, Michie demonstrated that machine learning was possible without computers, decades before modern AI algorithms became practical.
+MENACE was created by Donald Michie (1923-2007) at Edinburgh University in 1961. Using 304 matchboxes filled with coloured beads, Michie showed that a machine could learn to play noughts and crosses through trial and error without a computer, anticipating modern reinforcement learning.
 
-### Key Historical Facts:
-- **Inventor**: Donald Michie (1923-2007), British AI pioneer
-- **Year**: 1961
-- **Method**: 304 physical matchboxes containing colored beads
-- **Learning**: Reinforcement through bead adjustment based on game outcomes
-- **Impact**: Demonstrated feasibility of machine learning concepts
+References:
 
-## References and Further Reading
+- Michie, D. (1961). "Trial and Error". Science Survey, Part 2, pp. 129-145. Penguin Books.
+- Michie, D. (1963). "Experiments on the mechanization of game-learning part I". The Computer Journal, 6(3), 232-236.
+- Gardner, M. (1962). "Mathematical Games". Scientific American, 206(4), 138-151.
+- Sutton, R. S., and Barto, A. G. (2018). Reinforcement Learning: An Introduction (2nd ed.). MIT Press.
+- Donald Michie, Wikipedia: https://en.wikipedia.org/wiki/Donald_Michie
+- MENACE by mscroggs: https://www.mscroggs.co.uk/menace/
+- Computerphile MENACE video: https://www.youtube.com/watch?v=R9c-_neaxeU
 
-### Original Work
-- **Michie, D.** (1961). "Trial and Error". *Science Survey*, Part 2, pp. 129-145. Penguin Books.
-- **Michie, D.** (1963). "Experiments on the mechanization of game-learning part I. Characterization of the model and its parameters". *The Computer Journal*, 6(3), 232-236.
+## License
 
-### Historical Context
-- **Gardner, M.** (1962). "Mathematical Games: How to build a game-learning machine and then teach it to play and win". *Scientific American*, 206(4), 138-151.
-- **Sutton, R. S., & Barto, A. G.** (2018). *Reinforcement Learning: An Introduction* (2nd ed.). MIT Press. [Chapter 1 discusses MENACE's historical significance]
-
-### Online Resources
-- [Donald Michie - Wikipedia](https://en.wikipedia.org/wiki/Donald_Michie)
-- [MENACE (MSCROGGS) - Play with more settings](https://www.mscroggs.co.uk/menace/)
-- [Computerphile: MENACE Video](https://www.youtube.com/watch?v=R9c-_neaxeU) - Excellent visual explanation
-
-## Attribution
-
-This implementation pays tribute to Donald Michie's groundbreaking work in machine learning. While modernized for Python, it recreates the core algorithm that demonstrated machine learning was possible using simple physical components.
+Released under the terms in the LICENSE file.
