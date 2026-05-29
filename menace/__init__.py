@@ -32,5 +32,15 @@ Historical Note:
 # Make MENACE modules easy to import
 from .game import Board, winner
 from .menace import MENACE
-from .opponent import random_opponent_move
-from .train import play_game_once, train_menace, plot_stats
+from .opponent import (
+    random_opponent_move,
+    minimax_opponent_move,
+    perfect_opponent_move,
+)
+from .train import (
+    play_game_once,
+    train_menace,
+    train_menace_selfplay,
+    play_game_selfplay,
+    plot_stats,
+)
