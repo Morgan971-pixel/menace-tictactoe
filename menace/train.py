@@ -217,50 +217,52 @@ def plot_stats(
     """
     Plot the MENACE learning curve.
 
+    When `results` (raw per-game outcomes) is provided, cumulative rates and
+    the rolling win rate are both computed at per-game resolution, giving the
+    high-fidelity noisy chart that shows actual learning dynamics. Falls back
+    to the coarse sampled stats when results is not provided.
+
     Args:
         stats: Sampled stats from train_menace.
         save_path: If set, the figure is saved here instead of shown.
-        window: Window size for the rolling win rate average.
-        results: Optional raw per-game results for a smooth rolling average.
-            Falls back to the sampled win rate when not provided.
+        window: Window size for the rolling win rate line.
+        results: Raw per-game results list ('X'/'D'/'O') from m.training_results.
     """
-    games = [s[0] for s in stats]
-    wins = [s[4] for s in stats]
-    draws = [s[5] for s in stats]
-    losses = [s[6] for s in stats]
-
-    color_win = '#2196F3'
+    color_win  = '#2196F3'
     color_draw = '#FF9800'
     color_loss = '#F44336'
 
-    plt.figure(figsize=(8, 5))
-    plt.plot(games, wins, label="Win Rate", color=color_win)
-    plt.plot(games, draws, label="Draw Rate", color=color_draw)
-    plt.plot(games, losses, label="Loss Rate", color=color_loss)
+    plt.figure(figsize=(10, 6))
 
     if results:
+        # Per-game cumulative rates (smooth because they are running totals)
+        n = len(results)
+        games_pg = list(range(1, n + 1))
+        wx, dx, lx = 0, 0, 0
+        cum_win, cum_draw, cum_loss = [], [], []
+        for i, r in enumerate(results, start=1):
+            wx += r == 'X'; dx += r == 'D'; lx += r == 'O'
+            cum_win.append(wx / i)
+            cum_draw.append(dx / i)
+            cum_loss.append(lx / i)
+
+        plt.plot(games_pg, cum_win,  label="Win Rate",  color=color_win,  linewidth=2)
+        plt.plot(games_pg, cum_draw, label="Draw Rate", color=color_draw, linewidth=2)
+        plt.plot(games_pg, cum_loss, label="Loss Rate", color=color_loss, linewidth=2)
+
+        # Rolling win rate — noisy, shows game-by-game variance
         roll_games, roll_rates = _rolling_winrate(results, window)
         plt.plot(
-            roll_games,
-            roll_rates,
+            roll_games, roll_rates,
             label=f"Win Rate (rolling {window})",
-            color=color_win,
-            linestyle='--',
-            alpha=0.6,
+            color=color_win, linestyle='--', alpha=0.5, linewidth=1,
         )
-    elif len(wins) >= 2:
-        roll = []
-        for i in range(len(wins)):
-            lo = max(0, i - window + 1)
-            roll.append(sum(wins[lo:i + 1]) / (i - lo + 1))
-        plt.plot(
-            games,
-            roll,
-            label=f"Win Rate (rolling {window})",
-            color=color_win,
-            linestyle='--',
-            alpha=0.6,
-        )
+    else:
+        # Fallback: coarse sampled stats
+        games = [s[0] for s in stats]
+        plt.plot(games, [s[4] for s in stats], label="Win Rate",  color=color_win,  linewidth=2)
+        plt.plot(games, [s[5] for s in stats], label="Draw Rate", color=color_draw, linewidth=2)
+        plt.plot(games, [s[6] for s in stats], label="Loss Rate", color=color_loss, linewidth=2)
 
     plt.xlabel("Games Played")
     plt.ylabel("Rate")
@@ -269,6 +271,6 @@ def plot_stats(
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
     if save_path:
-        plt.savefig(save_path)
+        plt.savefig(save_path, dpi=150)
     else:
         plt.show()
