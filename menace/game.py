@@ -47,20 +47,20 @@ class Board:
         6|7|8
     """
     
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize an empty 3x3 tic-tac-toe board."""
-        self.cells = [EMPTY] * 9
+        self.cells: list[str] = [EMPTY] * 9
 
-    def available_moves(self):
+    def available_moves(self) -> list[int]:
         """
         Get list of available move positions.
-        
+
         Returns:
             list: Indices of empty cells (0-8)
         """
         return [i for i, v in enumerate(self.cells) if v == EMPTY]
 
-    def make_move(self, index, symbol):
+    def make_move(self, index: int, symbol: str) -> bool:
         """
         Attempt to place a symbol at the given position.
         
@@ -76,7 +76,7 @@ class Board:
             return True
         return False
 
-    def copy(self):
+    def copy(self) -> "Board":
         """
         Create a deep copy of the board.
         
@@ -90,7 +90,7 @@ class Board:
         new_board.cells = self.cells[:]
         return new_board
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Create a human-readable representation of the board.
         
@@ -106,7 +106,7 @@ class Board:
             rows.append('|'.join(c if c != EMPTY else str(3*r+i) for i, c in enumerate(row)))
         return '\n'.join(rows)
 
-def winner(board):
+def winner(board: Board) -> str | None:
     """
     Determine the winner of a tic-tac-toe game.
     
