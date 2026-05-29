@@ -88,6 +88,7 @@ Matchboxes learned: 335
 MENACE converges to winning roughly 72% of games against a random opponent after 3000 training games, using only 335 canonical board positions (out of a theoretical maximum of 5478, reduced via symmetry).
 
 ![Learning curve](assets/learning_curve.png)
+The chart shows three phases. In the first ~100 games MENACE has no experience, so moves are near-random and results are volatile. Then, between games 100 and 500 the cumulative rates stabilise rapidly as the most important positions get their beads calibrated. Finally, beyond 500 games improvement is steady but slow, reflecting the diminishing number of novel board states MENACE still needs to encounter. The dashed rolling-50 line captures the game-by-game variance; the solid lines show where performance has settled at each point in training.
 
 ## Training Modes
 
