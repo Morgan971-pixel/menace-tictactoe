@@ -2,6 +2,8 @@
 
 MENACE is a tic-tac-toe playing machine that learns through reinforcement. It was devised by Donald Michie in 1961 using 304 matchboxes and coloured beads, long before this kind of learning was practical on computers. This repository is a Python reimplementation that trains a MENACE agent, lets it play against random or perfect opponents, and supports interactive play against a human.
 
+![MENACE board](assets/banner.jpg)
+
 ## Features
 
 - Reinforcement learning agent driven by a bead-counting mechanism.
@@ -67,6 +69,25 @@ fresh.load("trained.json")
 
 move, log = fresh.choose_move([" "] * 9)
 ```
+
+## Training Output
+
+Running `menace-train --games 3000 --report-every 500` produces output like the following. Win rate climbs steadily as MENACE reinforces successful strategies and discards losing ones.
+
+```
+  500 games | win 0.622  draw 0.122  loss 0.256
+ 1000 games | win 0.654  draw 0.111  loss 0.235
+ 1500 games | win 0.679  draw 0.113  loss 0.207
+ 2000 games | win 0.690  draw 0.114  loss 0.196
+ 2500 games | win 0.707  draw 0.110  loss 0.184
+ 3000 games | win 0.724  draw 0.107  loss 0.168
+
+Matchboxes learned: 335
+```
+
+MENACE converges to winning roughly 72% of games against a random opponent after 3000 training games, using only 335 canonical board positions (out of a theoretical maximum of 5478, reduced via symmetry).
+
+![Learning curve](assets/learning_curve.png)
 
 ## Training Modes
 
