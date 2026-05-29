@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "menace-tictactoe"
+version = "0.1.0"
+description = "A Python reimplementation of Donald Michie's MENACE matchbox tic-tac-toe learning machine."
+authors = [{ name = "Morgan" }]
+requires-python = ">=3.10"
+dependencies = ["matplotlib", "tqdm"]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[project.scripts]
+menace-train = "examples.train_and_plot:main"
+menace-play = "examples.play_vs_human:main"
+
+[tool.setuptools]
+packages = ["menace", "examples"]
