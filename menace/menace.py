@@ -24,6 +24,7 @@ canonical positions. This enables 7x faster learning convergence.
 """
 
 from collections import Counter
+import json
 import random
 from .game import EMPTY
 
@@ -33,16 +34,16 @@ from .game import EMPTY
 #                  [6,7,8]
 TRANSFORMS = [
     list(range(9)),           # identity (no transform)
-    [6,3,0,7,4,1,8,5,2],     # rotate 90° clockwise
-    [8,7,6,5,4,3,2,1,0],     # rotate 180°
-    [2,5,8,1,4,7,0,3,6],     # rotate 270° clockwise  
+    [6,3,0,7,4,1,8,5,2],     # rotate 90 degrees clockwise
+    [8,7,6,5,4,3,2,1,0],     # rotate 180 degrees
+    [2,5,8,1,4,7,0,3,6],     # rotate 270 degrees clockwise  
     [2,1,0,5,4,3,8,7,6],     # reflect horizontally
     [6,7,8,3,4,5,0,1,2],     # reflect vertically
     [0,3,6,1,4,7,2,5,8],     # reflect main diagonal
     [8,5,2,7,4,1,6,3,0]      # reflect anti-diagonal
 ]
 
-def permute(board, perm):
+def permute(board: list[str], perm: list[int]) -> list[str]:
     """
     Apply a permutation transformation to a board.
     
@@ -55,13 +56,13 @@ def permute(board, perm):
         
     Example:
         >>> board = ['X', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
-        >>> perm = [2, 5, 8, 1, 4, 7, 0, 3, 6]  # rotate 270°
+        >>> perm = [2, 5, 8, 1, 4, 7, 0, 3, 6]  # rotate 270 degrees
         >>> permute(board, perm)
         [' ', ' ', 'X', ' ', ' ', ' ', ' ', ' ', ' ']
     """
     return [board[i] for i in perm]
 
-def canonicalize(board):
+def canonicalize(board: list[str]) -> tuple[str, list[int]]:
     """
     Convert board to canonical (standardized) representation.
     
@@ -92,7 +93,7 @@ def canonicalize(board):
     min_idx = min(range(len(boards)), key=lambda i: boards[i])
     return boards[min_idx], perms[min_idx]
 
-def invert_perm(perm):
+def invert_perm(perm: list[int]) -> list[int]:
     """
     Compute the inverse of a permutation.
     
@@ -142,24 +143,35 @@ class MENACE:
         >>> menace.update([log_info], 'X')  # MENACE won
     """
     
-    def __init__(self, init_beads=4, reward_win=3, reward_draw=1, reward_loss=-1):
+    def __init__(
+        self,
+        init_beads: int = 4,
+        reward_win: int = 3,
+        reward_draw: int = 1,
+        reward_loss: int = -1,
+        seed: int | None = None,
+    ) -> None:
         """
         Initialize MENACE with learning parameters.
-        
+
         Args:
             init_beads (int): Starting bead count for each legal move
-            reward_win (int): Reward for moves leading to wins  
+            reward_win (int): Reward for moves leading to wins
             reward_draw (int): Reward for moves leading to draws
             reward_loss (int): Penalty for moves leading to losses (negative)
+            seed (int | None): If set, seeds the global RNG for reproducibility.
+                None leaves randomness under the caller's control.
         """
-        self.matchboxes = dict()
+        self.matchboxes: dict[str, Counter] = dict()
         self.init_beads = init_beads
         self.reward_win = reward_win
         self.reward_draw = reward_draw
         self.reward_loss = reward_loss
-        random.seed(1)
+        self.training_results: list[str] = []
+        if seed is not None:
+            random.seed(seed)
 
-    def _ensure_box(self, board):
+    def _ensure_box(self, board: list[str]) -> tuple[str, list[int], Counter]:
         """
         Ensure a matchbox exists for the given board position.
         
@@ -184,7 +196,7 @@ class MENACE:
             self.matchboxes[can_str] = beads
         return can_str, perm, self.matchboxes[can_str]
 
-    def choose_move(self, board):
+    def choose_move(self, board: list[str]) -> tuple[int, tuple[str, int]]:
         """
         Select a move using probabilistic sampling based on bead counts.
         
@@ -213,11 +225,12 @@ class MENACE:
         for move, count in beads.items():
             choices += [move] * max(1, count)  # Ensure at least 1 copy
         chosen_can_move = random.choice(choices)
-        inv_perm = invert_perm(perm)
-        chosen_orig = inv_perm[chosen_can_move]
+        # permute() defines canonical[k] = board[perm[k]], so the original
+        # index for a canonical move is perm[move].
+        chosen_orig = perm[chosen_can_move]
         return chosen_orig, (can_str, chosen_can_move)
 
-    def update(self, history, result):
+    def update(self, history: list[tuple[str, int]], result: str) -> None:
         """
         Update bead counts based on game outcome (learning step).
         
@@ -255,7 +268,7 @@ class MENACE:
             if self.matchboxes[can_str][move] < 1:
                 self.matchboxes[can_str][move] = 1
 
-    def inspect_box(self, board):
+    def inspect_box(self, board: list[str]) -> tuple[str, dict[int, int]]:
         """
         Examine the current bead counts for a board position.
         
@@ -270,6 +283,35 @@ class MENACE:
                 - move_to_beads_mapping: Dict of {original_move: bead_count}
         """
         can_str, perm, beads = self._ensure_box(board)
-        inv_perm = invert_perm(perm)
-        mapping = {inv_perm[m]: beads[m] for m in beads}
+        mapping = {perm[m]: beads[m] for m in beads}
         return can_str, mapping
+
+    def save(self, path: str) -> None:
+        """
+        Serialise matchboxes to a JSON file.
+
+        Args:
+            path (str): Destination file path. Keys are canonical board
+                strings, values are {move_str: bead_count} dictionaries.
+        """
+        data = {
+            can_str: {str(move): count for move, count in beads.items()}
+            for can_str, beads in self.matchboxes.items()
+        }
+        with open(path, "w") as f:
+            json.dump(data, f)
+
+    def load(self, path: str) -> None:
+        """
+        Restore matchboxes from a JSON file written by save().
+
+        Args:
+            path (str): Source file path. Move keys are restored to ints
+                and bead values into Counter objects.
+        """
+        with open(path) as f:
+            data = json.load(f)
+        self.matchboxes = {
+            can_str: Counter({int(move): int(count) for move, count in beads.items()})
+            for can_str, beads in data.items()
+        }
