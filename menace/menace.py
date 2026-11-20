@@ -213,8 +213,11 @@ class MENACE:
         for move, count in beads.items():
             choices += [move] * max(1, count)  # Ensure at least 1 copy
         chosen_can_move = random.choice(choices)
-        inv_perm = invert_perm(perm)
-        chosen_orig = inv_perm[chosen_can_move]
+        # FIX (2026-11-20): canonical index k came from original index perm[k]
+        # (permute builds b[k] = board[perm[k]]), so map back with perm, not its
+        # inverse. The inverse is wrong for the 90 and 270 degree rotations and
+        # made MENACE pick occupied squares. See tests/test_move_translation.py.
+        chosen_orig = perm[chosen_can_move]
         return chosen_orig, (can_str, chosen_can_move)
 
     def update(self, history, result):
@@ -270,6 +273,6 @@ class MENACE:
                 - move_to_beads_mapping: Dict of {original_move: bead_count}
         """
         can_str, perm, beads = self._ensure_box(board)
-        inv_perm = invert_perm(perm)
-        mapping = {inv_perm[m]: beads[m] for m in beads}
+        # FIX (2026-11-20): map canonical moves back with perm (see choose_move).
+        mapping = {perm[m]: beads[m] for m in beads}
         return can_str, mapping
